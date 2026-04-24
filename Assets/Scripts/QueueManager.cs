@@ -39,7 +39,7 @@ public class QueueManager : MonoBehaviour
     {
         enqueueIndex = 0;
         queue = new Queue<int>();
-        queueItems = new GameObject[levelManager.queueLength];
+        queueItems = new GameObject[levelManager.queueLength + 1];
     }
 
     void Update()
@@ -50,7 +50,7 @@ public class QueueManager : MonoBehaviour
         {
             if (Keyboard.current[Key.Enter].wasPressedThisFrame || Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
             {
-                if (queue.Count > 0 && !isInstantiating)
+                if (queue.Count >= levelManager.queueLength && !isInstantiating)
                 {
                     StartCoroutine(RunConveyorTrain());
                 }
@@ -236,6 +236,13 @@ public class QueueManager : MonoBehaviour
     {
         currentState = QueueState.Running;
 
+        // --- Spawn Treasure Block ---
+        yield return new WaitForSeconds(moveDelay);
+        GameObject treasureBlock = Instantiate(gameData.queueItemPrefabs[0], levelManager.enqueuePosition, Quaternion.identity);
+        queueItems[enqueueIndex] = treasureBlock;
+        enqueueIndex++;
+        // -----------------------------
+
         if (startBelt == null)
         {
             Debug.LogError("StartBelt is not assigned in QueueManager!");
@@ -247,11 +254,13 @@ public class QueueManager : MonoBehaviour
         List<int> trainTypes = new List<int>();
 
         int[] queueArray = queue.ToArray();
-        for (int i = 0; i < enqueueIndex; i++)
+        for (int i = 0; i < queueArray.Length; i++)
         {
             trainCars.Add(queueItems[i]);
             trainTypes.Add(queueArray[i]);
         }
+        trainCars.Add(queueItems[queueArray.Length]);
+        trainTypes.Add(0);
 
         List<Vector3> pathNodes = new List<Vector3>();
         foreach (var node in startBelt.waypoints)
@@ -300,6 +309,11 @@ public class QueueManager : MonoBehaviour
                     lastStation = currentBelt.connectedStation;
                     int consumedType = trainTypes[0];
                     ConveyorBelt nextBelt = currentBelt.connectedStation.ConsumeAndRoute(consumedType);
+
+                    if (trainCars.Count == 1)
+                    {
+                        levelManager.CheckWinCondition(lastStation);
+                    }
 
                     if (nextBelt != null && nextBelt.waypoints.Length > 0)
                     {

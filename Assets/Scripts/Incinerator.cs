@@ -34,7 +34,11 @@ public class Incinerator : Station
             Debug.Log("All blocks incinerated");
         }
         
-        // Add additional event hooks or logic here (e.g. telling the LevelManager to complete)
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+        if (levelManager != null)
+        {
+            levelManager.ShowLoseScreen();
+        }
     }
 
     private void OnDrawGizmos()

@@ -16,6 +16,15 @@ public class LevelManager : MonoBehaviour
 
     public Vector3 enqueuePosition;
 
+    [Header("Conveyor Prefabs")]
+    public GameObject straightPrefab;
+    public GameObject cornerPrefab;
+
+    [Header("Win Condition")]
+    public Station targetStation;
+    public GameObject winScreen;
+    public GameObject loseScreen;
+
     void Start()
     {
         initialCameraPosition = new Vector3(-4f, 0, 0);
@@ -24,5 +33,34 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void CheckWinCondition(Station consumedAt)
+    {
+        if (consumedAt == targetStation)
+        {
+            Debug.Log("win");
+            if (winScreen != null) winScreen.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("lose");
+            ShowLoseScreen();
+        }
+    }
+
+    public void ShowLoseScreen()
+    {
+        if (loseScreen != null) loseScreen.SetActive(true);
+    }
+
+    public void ReloadLevel()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LoadMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 }
