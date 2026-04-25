@@ -42,10 +42,16 @@ jobs:
           targetPlatform: WebGL
           unityVersion: 6000.4.2f1
 
-      - name: Upload Build Artifact
+      - name: Upload Build Artifact for Debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebGL-Build
+          path: build/WebGL/WebGL
+
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/WebGL
+          path: build/WebGL/WebGL
 
   deploy:
     name: Deploy to GitHub Pages
