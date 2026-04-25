@@ -11,6 +11,5 @@ public class PlayerData
     {
         unlockedLevel = 1;
         hasSeenTutorial = false;
-        hasSeenCredits = false;
     }
 }

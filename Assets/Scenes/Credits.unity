@@ -594,8 +594,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -979,11 +979,11 @@ MonoBehaviour:
   playOnEnable: 1
   fullText: 'this message is for you, Tania.
 
-    you have been a constant source
-    of motivation, and a sweet gf to me <3.
+    while i was building this game,
+    you have been a constant source of support.
 
-    this is dedicated to you, I love
-    you :3. '
+    this is dedicated to you, I
+    love you <3. '
 --- !u!114 &1874665183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1031,8 +1031,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

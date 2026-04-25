@@ -63,4 +63,9 @@ public class LevelManager : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
+
+    public void OpenCreditsScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Credits");
+    }
 }

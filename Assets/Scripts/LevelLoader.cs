@@ -5,14 +5,13 @@ using TMPro; // Required for TextMeshPro elements
 public class LevelLoader : MonoBehaviour
 {
     [Header("Level Configuration")]
-    [SerializeField] private int maxLevel = 10;
+    [SerializeField] private int maxLevel = 5;
     
     [Header("UI References")]
     [SerializeField] private RectTransform parentCanvas;
     [SerializeField] private GameObject buttonPrefab;
     
     [Header("Grid Layout Settings")]
-    [SerializeField] private int maxItemsPerRow = 5;
     [SerializeField] private float spacingX = 20f;
     [SerializeField] private float spacingY = 20f;
     [SerializeField] private float topOffset = 100f;
@@ -36,8 +35,8 @@ public class LevelLoader : MonoBehaviour
         int unlockedLevel = (playerData != null) ? playerData.unlockedLevel : 1;
 
         // Calculate total grid dimensions in order to perfectly center the container
-        int totalColumns = maxItemsPerRow;
-        int totalRows = Mathf.CeilToInt((float)maxLevel / maxItemsPerRow);
+        int totalColumns = maxLevel;
+        int totalRows = 2; // Zigzag pattern occupies 2 visual rows
 
         float totalGridWidth = (totalColumns - 1) * spacingX;
         float totalGridHeight = (totalRows - 1) * spacingY;
@@ -52,8 +51,9 @@ public class LevelLoader : MonoBehaviour
         {
             int levelIndex = i + 1; // Levels are typically 1-indexed (Level 1, Level 2, ...)
 
-            int row = i / maxItemsPerRow;
-            int col = i % maxItemsPerRow;
+            // Zigzag pattern logic
+            int col = i;
+            int row = i % 2; // 0 for even indices (top), 1 for odd indices (bottom)
 
             float posX = startX + (col * spacingX);
             float posY = startY - (row * spacingY);
