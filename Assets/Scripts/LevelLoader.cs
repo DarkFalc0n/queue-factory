@@ -10,6 +10,13 @@ public class LevelLoader : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private RectTransform parentCanvas;
     [SerializeField] private GameObject buttonPrefab;
+
+    [Header("Level Icons")]
+    [SerializeField] private Sprite unlockedIcon;
+    [SerializeField] private Sprite disabledIcon;
+
+    [Header("Font Settings")]
+    [SerializeField] private TMP_FontAsset customFont;
     
     [Header("Grid Layout Settings")]
     [SerializeField] private float spacingX = 20f;
@@ -71,13 +78,29 @@ public class LevelLoader : MonoBehaviour
                 btnRect.anchorMax = new Vector2(0.5f, 0.5f);
                 btnRect.pivot = new Vector2(0.5f, 0.5f);
                 btnRect.anchoredPosition = new Vector2(posX, posY);
+                btnRect.localScale = new Vector3(1.5f, 1.5f, 1.5f); // Scale up by 1.5x
             }
 
             // Find TextMeshPro element dynamically and set the button text
             TextMeshProUGUI tmpText = levelBtnObj.GetComponentInChildren<TextMeshProUGUI>();
             if (tmpText != null)
             {
-                tmpText.text = levelIndex.ToString();
+                if (customFont != null)
+                {
+                    tmpText.font = customFont;
+                }
+
+                tmpText.color = Color.white;
+
+                if (levelIndex <= unlockedLevel)
+                {
+                    tmpText.text = levelIndex.ToString();
+                }
+                else
+                {
+                    tmpText.color = Color.gray5;
+                    tmpText.text = "?";
+                }
             }
             else
             {
@@ -86,17 +109,25 @@ public class LevelLoader : MonoBehaviour
 
             // Automatically integrate it with your new SaveSystem logic!
             Button btnComponent = levelBtnObj.GetComponent<Button>();
+            Image btnImage = levelBtnObj.GetComponent<Image>();
+
             if (btnComponent != null)
             {
                 if (levelIndex <= unlockedLevel)
                 {
                     btnComponent.interactable = true;
                     btnComponent.onClick.AddListener(() => OnLevelButtonClicked(levelIndex));
+                    
+                    if (btnImage != null && unlockedIcon != null)
+                        btnImage.sprite = unlockedIcon;
                 }
                 else
                 {
                     // Lock levels that the player hasn't reached yet
                     btnComponent.interactable = false;
+
+                    if (btnImage != null && disabledIcon != null)
+                        btnImage.sprite = disabledIcon;
                 }
             }
         }
@@ -105,6 +136,13 @@ public class LevelLoader : MonoBehaviour
     private void OnLevelButtonClicked(int levelIndex)
     {
         Debug.Log("Loading Level: " + levelIndex);
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_" + levelIndex);
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadScene("Level_" + levelIndex);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level_" + levelIndex);
+        }
     }
 }
