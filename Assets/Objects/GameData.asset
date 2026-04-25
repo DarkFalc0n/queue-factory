@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: Assembly-CSharp::GameData
   queueItemPrefabs:
-  - {fileID: 701129247358029187, guid: d3b56cdfaa86d3f42acf5c0673d024c3, type: 3}
-  - {fileID: 7882060324671222734, guid: dab1ccfcea200874b884218247d96304, type: 3}
-  - {fileID: 3234613304577528805, guid: 0e06854a321113a47b42e6dfd3a8180f, type: 3}
+  - {fileID: 6855068889583618230, guid: 6022ad3d845d1c641b3777adb158fd31, type: 3}
+  - {fileID: 4042400739765386053, guid: 34251e256dd74374e97420c2b7964b59, type: 3}
+  - {fileID: 2313239062525861602, guid: 2c1aa6ff6b69be84ab4a7a2f9d8f6c34, type: 3}
+  - {fileID: 2820981641746828380, guid: 4c0de508a113aa84b93a89b53c4848e8, type: 3}

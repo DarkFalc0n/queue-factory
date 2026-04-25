@@ -18,10 +18,12 @@ public class CameraMovement : MonoBehaviour
 
     private Vector3 targetPosition;
     private Camera cam;
+    private QueueManager queueManager;
 
     void Start()
     {
         cam = GetComponent<Camera>();
+        queueManager = FindObjectOfType<QueueManager>();
 
         if (levelManager != null)
         {
@@ -53,22 +55,34 @@ public class CameraMovement : MonoBehaviour
             targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
         }
 
-        float horizontal = 0f;
-        float vertical = 0f;
-
-        var keyboard = UnityEngine.InputSystem.Keyboard.current;
-        if (keyboard != null)
+        if (queueManager != null && queueManager.currentState == QueueState.Running)
         {
-            if (keyboard.rightArrowKey.isPressed || keyboard.dKey.isPressed) horizontal += 1f;
-            if (keyboard.leftArrowKey.isPressed || keyboard.aKey.isPressed) horizontal -= 1f;
-            if (keyboard.upArrowKey.isPressed || keyboard.wKey.isPressed) vertical += 1f;
-            if (keyboard.downArrowKey.isPressed || keyboard.sKey.isPressed) vertical -= 1f;
+            GameObject lastItem = queueManager.LastTrainCar;
+            if (lastItem != null)
+            {
+                targetPosition.x = lastItem.transform.position.x;
+                targetPosition.z = lastItem.transform.position.z;
+            }
         }
+        else
+        {
+            float horizontal = 0f;
+            float vertical = 0f;
 
-        Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
-        
-        targetPosition.x += movement.x * (moveSpeed * Time.deltaTime);
-        targetPosition.z += movement.z * (moveSpeed * Time.deltaTime);
+            var keyboard = UnityEngine.InputSystem.Keyboard.current;
+            if (keyboard != null)
+            {
+                if (keyboard.rightArrowKey.isPressed || keyboard.dKey.isPressed) horizontal += 1f;
+                if (keyboard.leftArrowKey.isPressed || keyboard.aKey.isPressed) horizontal -= 1f;
+                if (keyboard.upArrowKey.isPressed || keyboard.wKey.isPressed) vertical += 1f;
+                if (keyboard.downArrowKey.isPressed || keyboard.sKey.isPressed) vertical -= 1f;
+            }
+
+            Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
+            
+            targetPosition.x += movement.x * (moveSpeed * Time.deltaTime);
+            targetPosition.z += movement.z * (moveSpeed * Time.deltaTime);
+        }
 
         Vector3 origin = levelManager.origin;
         float halfWidth = levelManager.levelWidth / 2f;

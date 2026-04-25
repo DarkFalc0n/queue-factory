@@ -22,6 +22,10 @@ public class QueueManager : MonoBehaviour
     [Tooltip("The initial conveyor belt the items will transfer to when Running.")]
     public ConveyorBelt startBelt;
 
+    [Header("UI Prompts")]
+    public CanvasGroup readyPromptCanvasGroup;
+    public float promptFadeSpeed = 5f;
+
     public QueueState currentState = QueueState.Enqueuing;
 
     private int enqueueIndex;
@@ -40,10 +44,21 @@ public class QueueManager : MonoBehaviour
         enqueueIndex = 0;
         queue = new Queue<int>();
         queueItems = new GameObject[levelManager.queueLength + 1];
+        
+        if (readyPromptCanvasGroup != null)
+        {
+            readyPromptCanvasGroup.alpha = 0f;
+        }
     }
 
     void Update()
     {
+        if (readyPromptCanvasGroup != null)
+        {
+            float targetAlpha = (IsQueueFull && currentState == QueueState.Enqueuing) ? 1f : 0f;
+            readyPromptCanvasGroup.alpha = Mathf.Lerp(readyPromptCanvasGroup.alpha, targetAlpha, Time.deltaTime * promptFadeSpeed);
+        }
+
         if (Keyboard.current == null) return;
 
         if (currentState == QueueState.Enqueuing)
@@ -230,6 +245,20 @@ public class QueueManager : MonoBehaviour
         return default;
     }
 
+    private List<GameObject> activeTrainCars = new List<GameObject>();
+
+    public GameObject LastTrainCar 
+    {
+        get 
+        {
+            if (activeTrainCars != null && activeTrainCars.Count > 0)
+            {
+                return activeTrainCars[activeTrainCars.Count - 1];
+            }
+            return null;
+        }
+    }
+
     // --- CONVEYOR TRAIN LOGIC ---
 
     private IEnumerator RunConveyorTrain()
@@ -250,16 +279,16 @@ public class QueueManager : MonoBehaviour
             yield break;
         }
 
-        List<GameObject> trainCars = new List<GameObject>();
+        activeTrainCars.Clear();
         List<int> trainTypes = new List<int>();
 
         int[] queueArray = queue.ToArray();
         for (int i = 0; i < queueArray.Length; i++)
         {
-            trainCars.Add(queueItems[i]);
+            activeTrainCars.Add(queueItems[i]);
             trainTypes.Add(queueArray[i]);
         }
-        trainCars.Add(queueItems[queueArray.Length]);
+        activeTrainCars.Add(queueItems[queueArray.Length]);
         trainTypes.Add(0);
 
         List<Vector3> pathNodes = new List<Vector3>();
@@ -275,30 +304,30 @@ public class QueueManager : MonoBehaviour
             yield break;
         }
 
-        float[] carDistances = new float[trainCars.Count];
-        for (int i = 0; i < trainCars.Count; i++)
+        float[] carDistances = new float[activeTrainCars.Count];
+        for (int i = 0; i < activeTrainCars.Count; i++)
         {
-            carDistances[i] = -Vector3.Distance(trainCars[i].transform.position, pathNodes[0]);
+            carDistances[i] = -Vector3.Distance(activeTrainCars[i].transform.position, pathNodes[0]);
         }
 
         ConveyorBelt currentBelt = startBelt;
         Station lastStation = null;
 
-        while (trainCars.Count > 0)
+        while (activeTrainCars.Count > 0)
         {
             float step = moveSpeed * Time.deltaTime;
 
-            for (int i = 0; i < trainCars.Count; i++)
+            for (int i = 0; i < activeTrainCars.Count; i++)
             {
                 carDistances[i] += step;
 
                 if (carDistances[i] >= 0)
                 {
-                    MoveCarToPathDistance(trainCars[i], carDistances[i], pathNodes);
+                    MoveCarToPathDistance(activeTrainCars[i], carDistances[i], pathNodes);
                 }
                 else
                 {
-                    trainCars[i].transform.position = Vector3.MoveTowards(trainCars[i].transform.position, pathNodes[0], step);
+                    activeTrainCars[i].transform.position = Vector3.MoveTowards(activeTrainCars[i].transform.position, pathNodes[0], step);
                 }
             }
 
@@ -310,7 +339,7 @@ public class QueueManager : MonoBehaviour
                     int consumedType = trainTypes[0];
                     ConveyorBelt nextBelt = currentBelt.connectedStation.ConsumeAndRoute(consumedType);
 
-                    if (trainCars.Count == 1)
+                    if (activeTrainCars.Count == 1)
                     {
                         levelManager.CheckWinCondition(lastStation);
                     }
@@ -334,18 +363,18 @@ public class QueueManager : MonoBehaviour
                     currentBelt = null;
                 }
 
-                if (trainCars[0] != null)
+                if (activeTrainCars[0] != null)
                 {
-                    Destroy(trainCars[0]);
+                    Destroy(activeTrainCars[0]);
                 }
 
-                trainCars.RemoveAt(0);
+                activeTrainCars.RemoveAt(0);
                 trainTypes.RemoveAt(0);
 
-                if (trainCars.Count == 0) break;
+                if (activeTrainCars.Count == 0) break;
 
-                float[] nextDists = new float[trainCars.Count];
-                for (int d = 0; d < trainCars.Count; d++)
+                float[] nextDists = new float[activeTrainCars.Count];
+                for (int d = 0; d < activeTrainCars.Count; d++)
                 {
                     nextDists[d] = carDistances[d + 1];
                 }

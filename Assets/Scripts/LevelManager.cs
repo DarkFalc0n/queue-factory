@@ -20,6 +20,9 @@ public class LevelManager : MonoBehaviour
     public GameObject straightPrefab;
     public GameObject cornerPrefab;
 
+    [Header("Station Lights")]
+    public float activeRouteLightIntensity = 5f;
+
     [Header("Win Condition")]
     public Station targetStation;
     public GameObject winScreen;

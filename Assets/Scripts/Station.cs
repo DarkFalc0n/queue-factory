@@ -8,6 +8,8 @@ public struct RouteMapping
     public int itemType;
     [Tooltip("The conveyor belt the remaining items should take after consumption")]
     public ConveyorBelt nextBelt;
+    [Tooltip("The light to turn on when this route is taken")]
+    public Light routeLight;
 }
 
 public class Station : MonoBehaviour
@@ -23,10 +25,26 @@ public class Station : MonoBehaviour
     /// <returns>The connected ConveyorBelt for the remaining train, or null if no route exists/end of line.</returns>
     public virtual ConveyorBelt ConsumeAndRoute(int itemType)
     {
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+        float activeIntensity = levelManager != null ? levelManager.activeRouteLightIntensity : 5f;
+
+        // Turn off all lights for this station first
+        foreach (var route in routes)
+        {
+            if (route.routeLight != null)
+            {
+                route.routeLight.intensity = 0f;
+            }
+        }
+
         foreach (var route in routes)
         {
             if (route.itemType == itemType)
             {
+                if (route.routeLight != null)
+                {
+                    route.routeLight.intensity = activeIntensity;
+                }
                 return route.nextBelt;
             }
         }
