@@ -84,6 +84,6 @@ jobs:
           ./butler -V
 
       - name: Publish to itch.io
-        run: ./butler push build/WebGL ${{ secrets.ITCH_USERNAME }}/${{ secrets.ITCH_GAME }}:webgl
+        run: ./butler push build/WebGL ${{ secrets.ITCH_USERNAME }}/${{ secrets.ITCH_GAME }}:html5
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
