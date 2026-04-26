@@ -73,6 +73,10 @@ public class QueueManager : MonoBehaviour
 
             if (Keyboard.current[Key.Backspace].wasPressedThisFrame)
             {
+                if (AudioManager.Instance != null && AudioManager.Instance.levelSelectSound != null)
+                {
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.levelSelectSound);
+                }
                 RemoveLastElement();
             }
 
@@ -112,6 +116,12 @@ public class QueueManager : MonoBehaviour
         isInstantiating = true;
 
         GameObject instantiatedItem = Instantiate(gameData.queueItemPrefabs[item], levelManager.enqueuePosition, Quaternion.identity);
+        
+        if (AudioManager.Instance != null && gameData.queueItemSpawnSounds != null && item < gameData.queueItemSpawnSounds.Length)
+        {
+            AudioManager.Instance.PlaySFX(gameData.queueItemSpawnSounds[item]);
+        }
+
         queueItems[enqueueIndex] = instantiatedItem;
         enqueueIndex++;
 
@@ -265,9 +275,20 @@ public class QueueManager : MonoBehaviour
     {
         currentState = QueueState.Running;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayActionBGM();
+        }
+
         // --- Spawn Treasure Block ---
         yield return new WaitForSeconds(moveDelay);
         GameObject treasureBlock = Instantiate(gameData.queueItemPrefabs[0], levelManager.enqueuePosition, Quaternion.identity);
+        
+        if (AudioManager.Instance != null && gameData.queueItemSpawnSounds != null && gameData.queueItemSpawnSounds.Length > 0)
+        {
+            AudioManager.Instance.PlaySFX(gameData.queueItemSpawnSounds[0]);
+        }
+        
         queueItems[enqueueIndex] = treasureBlock;
         enqueueIndex++;
         // -----------------------------
@@ -338,6 +359,11 @@ public class QueueManager : MonoBehaviour
                     lastStation = currentBelt.connectedStation;
                     int consumedType = trainTypes[0];
                     ConveyorBelt nextBelt = currentBelt.connectedStation.ConsumeAndRoute(consumedType);
+
+                    if (lastStation.consumptionDelay > 0 && !(lastStation is Incinerator))
+                    {
+                        yield return new WaitForSeconds(lastStation.consumptionDelay);
+                    }
 
                     if (activeTrainCars.Count == 1)
                     {

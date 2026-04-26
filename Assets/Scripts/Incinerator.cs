@@ -12,6 +12,11 @@ public class Incinerator : Station
     /// </summary>
     public override ConveyorBelt ConsumeAndRoute(int itemType)
     {
+        if (AudioManager.Instance != null && AudioManager.Instance.incineratorConsumeSound != null)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.incineratorConsumeSound);
+        }
+
         // Custom logic to handle individual block incinerations can go here
         return null;
     }

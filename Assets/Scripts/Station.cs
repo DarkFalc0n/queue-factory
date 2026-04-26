@@ -17,6 +17,9 @@ public class Station : MonoBehaviour
     [Tooltip("Mappings defining which output belt to use based on the consumed item's type")]
     public RouteMapping[] routes;
 
+    [Tooltip("Time the train waits when this station consumes a block.")]
+    public float consumptionDelay = 0.5f;
+
     /// <summary>
     /// Processes the item type and returns the corresponding next conveyor belt.
     /// This method implicitly acts as the consumption step.
@@ -25,6 +28,11 @@ public class Station : MonoBehaviour
     /// <returns>The connected ConveyorBelt for the remaining train, or null if no route exists/end of line.</returns>
     public virtual ConveyorBelt ConsumeAndRoute(int itemType)
     {
+        if (AudioManager.Instance != null && AudioManager.Instance.stationConsumeSound != null)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.stationConsumeSound);
+        }
+
         LevelManager levelManager = FindObjectOfType<LevelManager>();
         float activeIntensity = levelManager != null ? levelManager.activeRouteLightIntensity : 5f;
 

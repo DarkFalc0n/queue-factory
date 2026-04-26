@@ -1672,6 +1672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Incinerator
   routes: []
+  consumptionDelay: 0.5
   logOnComplete: 1
 --- !u!4 &392315780
 Transform:
@@ -2448,7 +2449,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 13
   m_Type: 2
-  m_Color: {r: 1, g: 0.94983846, b: 0.25943398, a: 1}
+  m_Color: {r: 0.7490196, g: 0.2627451, b: 0.078431375, a: 1}
   m_Intensity: 5
   m_Range: 10
   m_SpotAngle: 30
@@ -3035,7 +3036,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'machine 2: the station glowing yellow must consume the treasure crate
+  m_text: 'machine 2: the machine glowing yellow must consume the treasure crate
     at the end.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 42683915357b642499e9d93c065addaa, type: 2}
@@ -4760,7 +4761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5325217630297926608, guid: 93b055563126a9a47bbf168ad18a7ad6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.35
+      value: -4.37
       objectReference: {fileID: 0}
     - target: {fileID: 5325217630297926608, guid: 93b055563126a9a47bbf168ad18a7ad6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5337,6 +5338,7 @@ MonoBehaviour:
   - itemType: 2
     nextBelt: {fileID: 1005692431}
     routeLight: {fileID: 775504998}
+  consumptionDelay: 0.5
 --- !u!4 &1373712767
 Transform:
   m_ObjectHideFlags: 0
@@ -6352,6 +6354,7 @@ MonoBehaviour:
   - itemType: 2
     nextBelt: {fileID: 1905138775}
     routeLight: {fileID: 1383225065}
+  consumptionDelay: 0.5
 --- !u!4 &1767741244
 Transform:
   m_ObjectHideFlags: 0

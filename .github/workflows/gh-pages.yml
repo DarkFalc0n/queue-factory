@@ -64,3 +64,26 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-itch:
+    name: Deploy to itch.io
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download WebGL Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: WebGL-Build
+          path: build/WebGL
+
+      - name: Download and Setup Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+
+      - name: Publish to itch.io
+        run: ./butler push build/WebGL ${{ secrets.ITCH_USERNAME }}/${{ secrets.ITCH_GAME }}:webgl
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

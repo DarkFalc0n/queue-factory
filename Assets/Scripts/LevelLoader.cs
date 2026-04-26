@@ -136,6 +136,23 @@ public class LevelLoader : MonoBehaviour
     private void OnLevelButtonClicked(int levelIndex)
     {
         Debug.Log("Loading Level: " + levelIndex);
+        StartCoroutine(LoadLevelRoutine(levelIndex));
+    }
+
+    private System.Collections.IEnumerator LoadLevelRoutine(int levelIndex)
+    {
+        if (AudioManager.Instance != null)
+        {
+            // Play the UI sound
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.levelSelectSound);
+            
+            // Start fading out the BGM (e.g. over 1.5 seconds for a smooth transition)
+            StartCoroutine(AudioManager.Instance.FadeOutBGM(1.5f));
+            
+            // Wait a short delay so the user hears the SFX before visual transition starts
+            yield return new WaitForSeconds(0.4f);
+        }
+
         if (SceneTransitionManager.Instance != null)
         {
             SceneTransitionManager.Instance.LoadScene("Level_" + levelIndex);

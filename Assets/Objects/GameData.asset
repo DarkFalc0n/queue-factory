@@ -17,3 +17,7 @@ MonoBehaviour:
   - {fileID: 4042400739765386053, guid: 34251e256dd74374e97420c2b7964b59, type: 3}
   - {fileID: 2313239062525861602, guid: 2c1aa6ff6b69be84ab4a7a2f9d8f6c34, type: 3}
   - {fileID: 2820981641746828380, guid: 4c0de508a113aa84b93a89b53c4848e8, type: 3}
+  queueItemSpawnSounds:
+  - {fileID: 8300000, guid: 0a424be845ed5304e9b28a53ec1bf143, type: 3}
+  - {fileID: 8300000, guid: c22e0f3bc9aee604eabde8924aa1a396, type: 3}
+  - {fileID: 8300000, guid: d65bc1c4c054d03459dcac15f9c3384c, type: 3}

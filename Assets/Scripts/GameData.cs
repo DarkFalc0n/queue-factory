@@ -4,4 +4,5 @@ using UnityEngine;
 public class GameData : ScriptableObject
 {
     public GameObject[] queueItemPrefabs;
+    public AudioClip[] queueItemSpawnSounds;
 }
